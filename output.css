@@ -53,6 +53,7 @@ html {
   font-variation-settings: normal;
   /* 6 */
   overflow-x: auto;
+  overflow-y: hidden;
 }
 
 /*
@@ -66,6 +67,7 @@ body {
   line-height: inherit;
   /* 2 */
   overflow-x: auto;
+  overflow-y: hidden;
 }
 
 /*
