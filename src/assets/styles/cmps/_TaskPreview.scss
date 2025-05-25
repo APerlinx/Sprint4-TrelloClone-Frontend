@@ -3,7 +3,7 @@
   flex-direction: column;
   border-radius: 8px;
   margin-bottom: 7px;
-  padding: 8px 8px 4px 12px;
+  padding: 8px 0px 4px 12px;
   box-shadow: $task-shadow-raised;
   border: 0.1px solid rgb(212, 212, 212);
   background-color: $task-bg-clr;
@@ -15,7 +15,7 @@
     border-radius: 0 0 8px 8px;
   }
 
-  >li {
+  > li {
     width: 100%;
 
     .tool-tip {
@@ -30,7 +30,7 @@
         margin-bottom: 0.33em;
         flex-grow: 1;
 
-        >div {
+        > div {
           display: flex;
           margin-right: 1em;
           align-items: center;
@@ -40,13 +40,13 @@
             margin-top: -0.05rem;
 
             // vertical-align: middle;
-            >.slash {
+            > .slash {
               scale: (1.1);
             }
           }
         }
 
-        >div>.icon {
+        > div > .icon {
           display: flex;
           align-items: center;
 
@@ -54,7 +54,7 @@
             margin-right: auto;
           }
 
-          &+span {
+          & + span {
             font-size: rem(12px);
             vertical-align: middle;
             margin-left: 0.3em;
@@ -71,17 +71,13 @@
             color: $dynamic-text;
           }
 
-          >.checklist-counter {
+          > .checklist-counter {
             color: $dynamic-text;
           }
         }
 
         .due-date {
           align-self: center;
-
-          .date-counter {
-            // color: blue;
-          }
 
           &.overdue-long {
             background-color: $background-danger;
@@ -227,12 +223,12 @@
     }
   }
 
-  >li>.task-header {
+  > li > .task-header {
     display: flex;
     justify-content: space-between;
     position: relative;
 
-    >p {
+    > p {
       margin: 0 0 4px;
       padding-inline-end: 1em;
       overflow: hidden;
@@ -251,9 +247,8 @@
   .task-header.full-cover-task {
     margin-top: 1.3em;
 
-    >p {
+    > p {
       font-weight: 500;
-      font-size: 16px;
       color: rgb(23, 43, 77);
       line-height: 20px;
       padding-bottom: 4px;
@@ -263,9 +258,9 @@
   .task-header.full-cover-image-task {
     margin-top: 15.7em;
 
-    >p {
+    > p {
       font-weight: 500;
-      font-size: 16px;
+      font-size: 1rem;
       color: rgb(23, 43, 77);
       line-height: 20px;
       padding-bottom: 4px;
@@ -300,9 +295,8 @@
 
 .icon-pencil {
   position: absolute;
-  top: -50%;
-  right: 1%;
-  transform: scale(0.9);
+  top: 1px;
+  right: 1px;
   font-size: 0.8em;
   padding: 6px 8px;
   border-radius: 8px;

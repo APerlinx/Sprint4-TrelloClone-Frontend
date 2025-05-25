@@ -50,16 +50,16 @@
         class="task-header"
         :class="['task-header', getTaskTextStyleClass()]"
       >
+        <p>{{ task.title }}</p>
+      </div>
+
+      <div class="tool-tip" v-if="!task.cover?.isFull">
         <i
           class="icon-pencil"
           v-show="showEditIcon"
           @click.stop="openQuickEdit"
           v-if="!task.cover"
         ></i>
-        <p>{{ task.title }}</p>
-      </div>
-
-      <div class="tool-tip" v-if="!task.cover?.isFull">
         <div class="tool-tip-icons">
           <div v-if="task.watching">
             <span class="icon watch"></span>

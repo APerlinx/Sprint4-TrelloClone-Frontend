@@ -2,15 +2,17 @@
   background: rgba(39, 39, 39, 0.2);
   backdrop-filter: blur(2px);
   width: 100%;
-  height: 56px;
+  height: rem(56px);
   border: none;
   padding: 12px 10px 12px 16px;
   margin-bottom: 0.4rem;
-  
+
   .nav-bar {
     display: flex;
-    justify-content: space-between; 
+    justify-content: space-between;
+    width: 100%;
     // flex-wrap: wrap;
+    transition: transform 0.5s ease-in;
 
     .title-container {
       flex: 1 1 auto;
@@ -23,91 +25,89 @@
       .title-tool-tip {
         display: flex;
         justify-content: start;
-
       }
     }
     .navbar-container {
       flex: 1 1 auto;
-      display: flex;
-      justify-content: flex-end;
 
-    > .tool-tip {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      > span {
-        color: $dynamic-text;
-      }
-      > .filter {
-        padding: 6px 12px;
-        color: $dynamic-text;
-        transition-property: background-color, border-color, box-shadow;
-        transition-duration: 85ms;
-        transition-timing-function: ease;
-        border-radius: 3px;
-        margin-top: 0.2em;
-        &:hover {
-          background-color: $dynamic-button-hovered;
+      > .tool-tip {
+        display: flex;
+        align-items: center;
+        justify-self: end;
+
+        > span {
+          color: $dynamic-text;
         }
-        > .filter-icon {
-          vertical-align: middle;
+        > .filter {
+          padding: 6px 12px;
+          color: $dynamic-text;
+          transition-property: background-color, border-color, box-shadow;
+          transition-duration: 85ms;
+          transition-timing-function: ease;
+          border-radius: 3px;
+          margin-top: 0.2em;
+          &:hover {
+            background-color: $dynamic-button-hovered;
+          }
+          > .filter-icon {
+            vertical-align: middle;
+          }
         }
-      }
-      > .line {
-        border-left: 1px solid hsla(0, 0%, 100%, 0.16);
-        height: 16px;
-        margin: rem(8px) rem(8px) rem(8px) rem(8px);
-      }
-      .members > .member {
-        position: relative; 
-        display: inline-block;
-        width: 28px;
-        height: 28px;
-        margin: 0 rem(-1px);
-        border-radius: 50%;
-        overflow: hidden;
-        transition-property: background-color;
-        transition-duration: 85ms;
-        transition-timing-function: ease;
-        cursor: pointer;
-        &::before {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-color: transparent;
+        > .line {
+          border-left: 1px solid hsla(0, 0%, 100%, 0.16);
+          height: 16px;
+          margin: rem(8px) rem(8px) rem(8px) rem(8px);
+        }
+        .members > .member {
+          position: relative;
+          display: inline-block;
+          width: 28px;
+          height: 28px;
+          margin: 0 rem(-1px);
           border-radius: 50%;
-          transition: background-color 0.2s ease;
+          overflow: hidden;
+          transition-property: background-color;
+          transition-duration: 85ms;
+          transition-timing-function: ease;
+          cursor: pointer;
+          &::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+          }
+
+          &:hover::before {
+            background-color: $dynamic-button-hovered;
+          }
+
+          > .member-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
         }
 
-        &:hover::before {
-          background-color: $dynamic-button-hovered;
-        }
-
-        > .member-image {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-      }
-
-      > .menu-icon {
-        margin: 0 rem(4px) 0 0;
-        padding: 6px;
-        transition: 0.1s ease;
-        border-radius: rem(3px);
-        margin-inline-start: 0.2em;
-        @include trello-icon($content: "\e952", $type: md, $color: $dynamic-text);
-        cursor: pointer;
-        &:hover {
-          background-color: $dynamic-button-hovered;
+        > .menu-icon {
+          margin: 0 rem(4px) 0 0;
+          padding: 6px;
+          transition: 0.1s ease;
+          border-radius: rem(3px);
+          margin-inline-start: 0.2em;
+          @include trello-icon($content: "\e952", $type: md, $color: $dynamic-text);
+          cursor: pointer;
+          &:hover {
+            background-color: $dynamic-button-hovered;
+          }
         }
       }
     }
-  }
-     div > input {
+    div > input {
       background-color: $group-background-input;
       box-shadow: $border-focused 0px 0px 0px 2px inset;
       padding-inline-start: 0.5em;
@@ -125,7 +125,7 @@
     div > .board-title {
       color: $dynamic-text;
       font-weight: bold;
-      line-height: 32px; 
+      line-height: 32px;
       font-size: 18px;
       margin: 0;
       margin-inline-end: 1.2em;

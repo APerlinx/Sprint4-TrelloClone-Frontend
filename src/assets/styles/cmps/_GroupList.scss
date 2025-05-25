@@ -1,12 +1,9 @@
 .group-list-section {
   display: flex;
   flex-direction: column;
-  flex: 1;
   overflow-x: auto;
-  overflow-y: hidden;
-  margin-bottom: 8px;
-  padding-bottom: 8px;
-  margin-inline-start: 1.6rem;
+  padding-bottom: 1rem;
+  padding-inline: 1rem;
 
   .group-list {
     display: flex;
@@ -46,7 +43,6 @@
     .group-btn:hover {
       @include button-hover-style;
       border-radius: 8px;
-      
     }
 
     .list-btn-wrapper {
@@ -113,7 +109,7 @@
 }
 
 .group-list-section {
-  scrollbar-width: thin;
+  scrollbar-width: 4rem;
   scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
 
@@ -124,12 +120,7 @@
 .smooth-dnd-container.horizontal {
   .smooth-dnd-draggable-wrapper {
     transition-duration: 0ms;
-    
   }
-}
-
-.smooth-dnd-container.horizontal {
-  // position: static;
 }
 
 .zoomed-out {
@@ -137,14 +128,11 @@
   width: calc(100% * 0.6); /* Adjust to match the scale factor */
   transform-origin: top left;
   transition: transform 0.3s ease;
-
 }
 
 .zoom-btn {
   display: none;
 }
-
-
 
 @media (max-width: 600px) {
   .zoom-btn {
@@ -154,17 +142,17 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #188745; 
+    background-color: #188745;
     border: none;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    z-index: 1000; 
-}
+    z-index: 1000;
+  }
 
   .zoom-btn .icon {
-    background-image: url('path-to-your-icon.png'); 
+    background-image: url("path-to-your-icon.png");
     width: 20px;
     height: 20px;
     background-size: contain;
@@ -176,6 +164,6 @@
   }
 
   .zoom-btn:hover {
-    background-color: #50a941; 
+    background-color: #50a941;
   }
 }

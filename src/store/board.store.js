@@ -216,6 +216,7 @@ export const boardStore = {
     async addBoard({ commit }, { board }) {
       try {
         board = await boardService.save(board)
+
         commit(getActionAddBoard(board))
         return board
       } catch (err) {
@@ -245,25 +246,32 @@ export const boardStore = {
     },
     async updateTask({ commit, state, dispatch }, { taskDetails }) {
       try {
-        let board = state.boards.find(board => board._id === taskDetails.boardId)
+        let board = state.boards.find(
+          (board) => board._id === taskDetails.boardId
+        )
         const boardCopy = JSON.parse(JSON.stringify(board))
 
-        let group = boardCopy.groups.find(group => taskDetails.groupId === group.id)
-        let groupIdx = boardCopy.groups.findIndex(group => taskDetails.groupId === group.id)
+        let group = boardCopy.groups.find(
+          (group) => taskDetails.groupId === group.id
+        )
+        let groupIdx = boardCopy.groups.findIndex(
+          (group) => taskDetails.groupId === group.id
+        )
 
-        const taskIdx = group.tasks.findIndex(task => task.id === taskDetails.task.id)
+        const taskIdx = group.tasks.findIndex(
+          (task) => task.id === taskDetails.task.id
+        )
 
         let updateGroup = group.tasks.splice(taskIdx, 1, taskDetails.task)
 
         boardCopy.groups.splice(groupIdx, 1, updateGroup)
 
-        dispatch({ type: "updateBoard", board: boardCopy })
+        dispatch({ type: 'updateBoard', board: boardCopy })
 
         // commit({ type: 'updateBoard', board: boardCopy })
 
         // const savedBoard = await boardService.save(boardCopy)
         // console.log(savedBoard);
-
 
         // return savedBoard
         return taskDetails.task
@@ -302,7 +310,9 @@ export const boardStore = {
 
         commit({ type: 'addGroup', boardId: savedBoard._id, group })
 
-        dispatch('addActivity', { activity: `Added ${group.title} to this board`, })
+        dispatch('addActivity', {
+          activity: `Added ${group.title} to this board`,
+        })
       } catch (err) {
         console.log('boardStore: Error in addGroup', err)
         throw err
@@ -342,7 +352,7 @@ export const boardStore = {
 
         const board = await boardService.getById(boardId)
         commit({ type: 'saveBoardToRecent', board })
-        console.log('happen');
+        console.log('happen')
       } catch (err) {
         console.log(err)
       }
@@ -382,7 +392,7 @@ export const boardStore = {
       }
     },
     async saveGroups({ commit, state, dispatch }, { groups, currBoard }) {
-      // TODO : Optimistic implemntation of dnd, need to find a better solution 
+      // TODO : Optimistic implemntation of dnd, need to find a better solution
       // the size of the board object cause the dnd to look bugy
       // probably need to save not the whole board but only groups
       const prevBoard = JSON.parse(JSON.stringify(state.currentBoard))
@@ -490,7 +500,7 @@ export const boardStore = {
       try {
         commit('setBoardBgClr', payload)
         await boardService.save(state.currentBoard)
-      } catch (err) { }
+      } catch (err) {}
     },
     async changeBoardBgGrad({ state, commit }, payload) {
       try {
@@ -534,50 +544,50 @@ export const boardStore = {
   getters: {
     getFilteredGroups:
       (state) =>
-        (dueDateFilters = {}, boardId) => {
-          let currentTime = new Date().getTime()
-          let twentyFourHours = 24 * 60 * 60 * 1000
+      (dueDateFilters = {}, boardId) => {
+        let currentTime = new Date().getTime()
+        let twentyFourHours = 24 * 60 * 60 * 1000
 
-          const board = state.boards.find((board) => board._id === boardId)
-          if (!board) {
-            console.error('No board found with ID:', boardId)
-            return []
+        const board = state.boards.find((board) => board._id === boardId)
+        if (!board) {
+          console.error('No board found with ID:', boardId)
+          return []
+        }
+
+        let isFilterSelected = Object.values(dueDateFilters).some(
+          (value) => value === true
+        )
+
+        if (!isFilterSelected) {
+          return [...board.groups]
+        }
+
+        return board.groups.map((group) => {
+          return {
+            ...group,
+            tasks: group.tasks.filter((t) => {
+              if (t.status === 'done') {
+                return false
+              }
+
+              let matchesDueDateFilters = false
+
+              if (dueDateFilters.noDate) {
+                matchesDueDateFilters = !t.dueDate
+              } else if (dueDateFilters.overdue) {
+                matchesDueDateFilters = t.dueDate && currentTime - t.dueDate > 0
+              } else if (dueDateFilters.dueInNextDay) {
+                let startOfNextDay = currentTime
+                let endOfNextDay = currentTime + twentyFourHours
+                matchesDueDateFilters =
+                  t.dueDate >= startOfNextDay && t.dueDate <= endOfNextDay
+              }
+
+              return matchesDueDateFilters
+            }),
           }
-
-          let isFilterSelected = Object.values(dueDateFilters).some(
-            (value) => value === true
-          )
-
-          if (!isFilterSelected) {
-            return [...board.groups]
-          }
-
-          return board.groups.map((group) => {
-            return {
-              ...group,
-              tasks: group.tasks.filter((t) => {
-                if (t.status === 'done') {
-                  return false
-                }
-
-                let matchesDueDateFilters = false
-
-                if (dueDateFilters.noDate) {
-                  matchesDueDateFilters = !t.dueDate
-                } else if (dueDateFilters.overdue) {
-                  matchesDueDateFilters = t.dueDate && currentTime - t.dueDate > 0
-                } else if (dueDateFilters.dueInNextDay) {
-                  let startOfNextDay = currentTime
-                  let endOfNextDay = currentTime + twentyFourHours
-                  matchesDueDateFilters =
-                    t.dueDate >= startOfNextDay && t.dueDate <= endOfNextDay
-                }
-
-                return matchesDueDateFilters
-              }),
-            }
-          })
-        },
+        })
+      },
     boards({ boards }) {
       return boards
     },
@@ -589,14 +599,16 @@ export const boardStore = {
       return boards.filter((board) => byName.test(board.title))
     },
     recentBoards({ boards }) {
-      return boards.filter((board) => board.isRecent)
+      return boards
+        .filter((board) => board.isRecent)
         .sort((a, b) => a.recentAt - b.recentAt)
-        .slice(-4);
+        .slice(-4)
     },
     fullRecentBoards({ boards }) {
-      return boards.filter((board) => board.isRecent)
+      return boards
+        .filter((board) => board.isRecent)
         .sort((a, b) => a.recentAt - b.recentAt)
-        .slice(-8);
+        .slice(-8)
     },
     savedBoard({ savedBoard }) {
       return savedBoard
@@ -632,6 +644,6 @@ export const boardStore = {
     },
     changeClr({ changeClr }) {
       return changeClr
-    }
+    },
   },
 }

@@ -1,19 +1,22 @@
 .index-layout {
   display: grid;
   grid-template-columns: 1fr 1150px 1fr;
+  padding-top: 2rem;
 
   .board-container {
     grid-column: 2;
     display: flex;
     flex-direction: column;
     justify-content: center;
-
+    gap: 2rem;
     .starred-container {
       .starred {
         margin-block-start: rem(18px);
 
         .starred-title {
           margin-block-end: rem(13px);
+          margin-block-start: rem(13px);
+
           display: flex;
           align-items: center;
           gap: rem(8px);
