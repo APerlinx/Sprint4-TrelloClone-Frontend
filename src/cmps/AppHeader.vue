@@ -40,8 +40,11 @@
             <i class="fa-solid fa-chevron-down"></i>
           </div>
 
-          <div class="plus-btn" >
-            <span @click="isAddBoardMobile = !isAddBoardMobile" class="plus-icon"></span>
+          <div class="plus-btn">
+            <span
+              @click="isAddBoardMobile = !isAddBoardMobile"
+              class="plus-icon"
+            ></span>
             <div class="mobile-add-board">
               <AddBoard
                 v-if="isAddBoardMobile"
@@ -101,22 +104,21 @@
   <div class="notification-container">
     <Notification @closeNotification="closeNotification" v-if="isNotifiction" />
   </div>
-
 </template>
 
 <script>
-import { showErrorMsg, showSuccessMsg } from "../services/event-bus.service";
-import AddBoard from "../cmps/AddBoard.vue";
-import BoardFilter from "../cmps/BoardFilter.vue";
-import RecentPicker from "../cmps/RecentPicker.vue";
-import StarredPicker from "../cmps/StarredPicker.vue";
-import Notification from "../cmps/Notification.vue";
-import Account from "../cmps/Account.vue";
+import { showErrorMsg, showSuccessMsg } from '../services/event-bus.service'
+import AddBoard from '../cmps/AddBoard.vue'
+import BoardFilter from '../cmps/BoardFilter.vue'
+import RecentPicker from '../cmps/RecentPicker.vue'
+import StarredPicker from '../cmps/StarredPicker.vue'
+import Notification from '../cmps/Notification.vue'
+import Account from '../cmps/Account.vue'
 
-import { clickOutsideDirective } from "../directives/index.js";
+import { clickOutsideDirective } from '../directives/index.js'
 
-import { defineComponent } from "vue";
-import Popper from "vue3-popper";
+import { defineComponent } from 'vue'
+import Popper from 'vue3-popper'
 
 export default {
   data() {
@@ -127,7 +129,7 @@ export default {
       isAddBoardDesktop: false,
       isNotifiction: false,
       isAccountOpen: false,
-    };
+    }
   },
 
   methods: {
@@ -136,106 +138,106 @@ export default {
     },
     async readNotifications() {
       try {
-        this.isNotifiction = !this.isNotifiction;
+        this.isNotifiction = !this.isNotifiction
 
-        if (!this.isNotifiction) return;
-        await this.$store.dispatch({ type: "markNotificationsAsRead" });
+        if (!this.isNotifiction) return
+        await this.$store.dispatch({ type: 'markNotificationsAsRead' })
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     },
     closeNotification() {
-      this.isNotifiction = false;
+      this.isNotifiction = false
     },
     closeAddBoardTop() {
-      this.isAddBoardTop = false;
+      this.isAddBoardTop = false
     },
     toggleAddBordBottom() {
-      this.closeModals();
-      this.isAddBoardBottom = !this.isAddBoardBottom;
+      this.closeModals()
+      this.isAddBoardBottom = !this.isAddBoardBottom
     },
     toggleAddBordDestktop() {
-      this.closeModals();
-      this.isAddBoardDesktop = !this.isAddBoardDesktop;
+      this.closeModals()
+      this.isAddBoardDesktop = !this.isAddBoardDesktop
     },
     toggleRecentModal() {
-      this.isPickerModalStarred = false;
-      this.isAddBoardDesktop = false;
+      this.isPickerModalStarred = false
+      this.isAddBoardDesktop = false
       this.isPickerModalRecent
         ? this.closeModals()
-        : (this.isPickerModalRecent = true);
+        : (this.isPickerModalRecent = true)
     },
     toggleStarredModal() {
-      this.isPickerModalRecent = false;
-      this.isAddBoardDesktop = false;
+      this.isPickerModalRecent = false
+      this.isAddBoardDesktop = false
       this.isPickerModalStarred
         ? this.closeModals()
-        : (this.isPickerModalStarred = true);
+        : (this.isPickerModalStarred = true)
     },
     isUnreadNotifiction() {
       return this.fullUser.notifications.some(
         (notification) => !notification.isRead
-      );
+      )
     },
     async saveBoard(board) {
       try {
         await this.$store.dispatch({
-          type: "addBoard",
+          type: 'addBoard',
           board,
-        });
-        this.isAddBoardDesktop = false;
-        this.closeModal();
-        this.$router.push("/details/" + this.savedBoard._id);
+        })
+        this.isAddBoardDesktop = false
+        this.closeModal()
+        this.$router.push('/details/' + this.savedBoard._id)
       } catch (err) {
-        console.log(err);
+        console.log(err)
       }
     },
     async starBoard(board) {
       try {
-        await this.$store.dispatch({ type: "updateBoard", board });
+        await this.$store.dispatch({ type: 'updateBoard', board })
       } catch (err) {
-        console.log(err);
-        showErrorMsg("Cant star board");
+        console.log(err)
+        showErrorMsg('Cant star board')
       }
     },
     closeModals() {
-      this.isPickerModalStarred = false;
-      this.isPickerModalRecent = false;
+      this.isPickerModalStarred = false
+      this.isPickerModalRecent = false
     },
     filterByTxt(filterBy) {
-      this.$store.commit({ type: "setFilterBy", filterBy });
+      this.$store.commit({ type: 'setFilterBy', filterBy })
     },
   },
 
   computed: {
     changeClr() {
-      return this.$store.state.boardStore.changeClr;
+      return this.$store.state.boardStore.changeClr
     },
     unreadNotification() {
-      const loggedinUser = this.$store.getters.loggedinUser;
+      const loggedinUser = this.$store.getters.loggedinUser
       const unreadNotifications = loggedinUser?.notifications.filter(
         (not) => !not.isRead
-      );
-      return unreadNotifications ? unreadNotifications.length : 0;
+      )
+      return unreadNotifications ? unreadNotifications.length : 0
     },
     loggedInUser() {
-      const user = this.$store.getters.loggedinUser?.fullname;
-      if (!user) return "";
-      const names = user.split(" ");
+      const user = this.$store.getters.loggedinUser?.fullname
+      if (!user) return ''
+      const names = user.split(' ')
       if (names.length === 1) {
-        return names[0].charAt(0);
+        return names[0].charAt(0)
       } else {
-        return `${names[0].charAt(0)}${names[names.length - 1].charAt(0)}`;
+        return `${names[0].charAt(0)}${names[names.length - 1].charAt(0)}`
       }
     },
     fullUser() {
-      return this.$store.getters.fullUser;
+      return this.$store.getters.fullUser
     },
     userNotifications() {
-      return this.fullUser?.notifications;
+      return this.fullUser?.notifications
     },
     savedBoard() {
-      return this.$store.getters.savedBoard;
+      return this.$store.getters.savedBoard
     },
   },
 
@@ -253,5 +255,5 @@ export default {
     Notification,
     Account,
   },
-};
+}
 </script>

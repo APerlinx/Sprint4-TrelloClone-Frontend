@@ -12,12 +12,13 @@
     .logo {
         display: flex;
         align-items: baseline;
-        justify-self: end;
+        justify-self: start;
         align-self: center;
         gap: rem(6px);
         font-size: 3em;
         grid-column: 1;
         width: 500px;
+        padding-inline: 1rem;
 
         i {
             display: none;
@@ -35,7 +36,7 @@
 
     .user-section {
         grid-column: 3;
-        justify-self: start;
+        justify-self: end;
         display: flex;
         align-items: center;
 

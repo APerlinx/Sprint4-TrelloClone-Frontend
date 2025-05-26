@@ -14,8 +14,7 @@ export default defineConfig({
 
   //for build the app front and back merg
   build: {
-    outDir: '../backend/public',
+    outDir: '../Sprint4-TrelloClone-Backend/public',
     emptyOutdir: true,
-    assetsDir: './dist',
   },
 })
