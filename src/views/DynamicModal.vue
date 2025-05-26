@@ -5,16 +5,26 @@
       <span class="dynamic-modal-close" @click.stop="closeDynamicModal"></span>
     </section>
     <section>
-      <component :board="boardToUpdate" :is="actionCmpType" :taskToEdit="taskToEdit" @updateBoard="updateBoard"
-        @toggleMember="toggleMember" @checklist="addChecklist" @saveLabel="saveLabel" @addDueDate="addDueDate"
-        @removeLabel="removeLabel" @setCover="setCover" @closeEditModal="closeDynamicModal"
-        @addAttachment="addAttachment">
+      <component
+        :board="boardToUpdate"
+        :is="actionCmpType"
+        :taskToEdit="taskToEdit"
+        @updateBoard="updateBoard"
+        @toggleMember="toggleMember"
+        @checklist="addChecklist"
+        @saveLabel="saveLabel"
+        @addDueDate="addDueDate"
+        @removeLabel="removeLabel"
+        @setCover="setCover"
+        @closeEditModal="closeDynamicModal"
+        @addAttachment="addAttachment"
+      >
       </component>
     </section>
   </div>
 </template>
 <script>
-import ChecklistPicker from '../cmps/taskDeatilsOpts/CheckListPicker.vue'
+import ChecklistPicker from '../cmps/taskDeatilsOpts/ChecklistPickerTEMP.vue'
 import LabelsPicker from '../cmps/taskDeatilsOpts/LabelsPicker.vue'
 import MemberPicker from '../cmps/taskDeatilsOpts/MemberPicker.vue'
 import DueDatePicker from '../cmps/taskDeatilsOpts/DueDatePicker.vue'
@@ -30,7 +40,7 @@ export default {
   },
   data() {
     return {
-      boardToUpdate: null
+      boardToUpdate: null,
     }
   },
   created() {
