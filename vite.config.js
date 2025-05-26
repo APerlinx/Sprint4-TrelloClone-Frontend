@@ -14,7 +14,8 @@ export default defineConfig({
 
   //for build the app front and back merg
   build: {
-    outDir: 'dist',
+    outDir: '../backend/public',
     emptyOutdir: true,
+    assetsDir: './dist',
   },
 })

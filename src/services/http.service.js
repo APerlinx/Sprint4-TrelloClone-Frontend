@@ -1,7 +1,8 @@
 import Axios from 'axios'
 // import { router } from '@/router'
 
-const BASE_URL = import.meta.env.VITE_API_URL || '//localhost:3032/api/'
+const BASE_URL =
+  process.env.NODE_ENV === 'production' ? '/api/' : 'http://localhost:3032/api/'
 
 const axios = Axios.create({
   withCredentials: true,
