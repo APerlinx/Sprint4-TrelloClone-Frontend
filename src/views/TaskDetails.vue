@@ -278,7 +278,7 @@ import Checklist from '../cmps/Checklist.vue'
 import Members from '../cmps/Members.vue'
 import Labels from '../cmps/Labels.vue'
 import Attachment from '../cmps/AttachmentPreview.vue'
-import Dates from '../cmps/Dates.vue'
+import Dates from '../cmps/DatesTEMP.vue'
 import Comments from '../cmps/Comments.vue'
 import CoverPicker from '../cmps/taskDeatilsOpts/CoverPicker.vue'
 
