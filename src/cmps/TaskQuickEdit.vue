@@ -1,6 +1,6 @@
 <template>
   <div v-if="quickEditDisplay">
-    <section class="task-preview-container" @click="closeQuickEdit">
+    <section class="task-preview-container">
       <div class="quickEditScreen"></div>
       <div class="quickEdit" ref="quickEdit" :style="quickEditPosition">
         <TaskCover :task="task" />
@@ -83,7 +83,7 @@
       </div>
 
       <div class="save-button" ref="saveButton" :style="saveButtonPosition">
-        <button>Save</button>
+        <button @click="saveTitle">Save</button>
       </div>
 
       <div
@@ -101,13 +101,13 @@
           :key="btn.type"
           @click.stop="openModal(btn.type)"
         >
-        
           <span :class="btn.icon"></span>
           {{ btn.txt }}
         </button>
         <div @click.stop="removeTask">
           <span class="archive-icon"></span>
         </div>
+        <button @click="closeQuickEdit">Close</button>
 
         <DynamicModal
           v-if="cmpType"
@@ -120,8 +120,8 @@
           @updateLable="updateLable"
           @DueDate="addDueDate"
           @setCover="setCover"
+          @closeDynamicModal="closeDynamicModal"
         />
-
       </div>
     </section>
   </div>
@@ -132,7 +132,7 @@ import { watch } from 'vue'
 
 import DynamicModal from '../views/DynamicModal.vue'
 import TaskCover from './TaskCover.vue'
-import Popper from "vue3-popper";
+import Popper from 'vue3-popper'
 
 export default {
   name: 'task-preview',
@@ -214,9 +214,10 @@ export default {
   mounted() {
     document.addEventListener('click', this.onClickOutside)
   },
-  beforeDestroy() {
+  unmounted() {
     document.removeEventListener('click', this.onClickOutside)
   },
+
   computed: {
     areLabelsVisible() {
       return this.$store.getters.areLabelsVisible
@@ -226,25 +227,28 @@ export default {
     },
   },
   methods: {
+    closeDynamicModal() {
+      this.isDynamicModal = false
+      this.cmpType = null
+    },
     closeQuickEdit() {
-      // this.$emit('close')
+      this.$emit('close')
+      this.quickEditPosition = {}
+      this.buttonPosition = {}
+      this.saveButtonPosition = {}
     },
 
-    onClickOutside(event) {
-      // console.log('event', event)
-      // if (
-      //   this.$refs.quickEdit &&
-      //   !this.$refs.quickEdit.contains(event.target) &&
-      //   (!this.cmpType || !this.$refs.dynamicModal.$el.contains(event.target))
-      // ) {
-      //   this.closeQuickEdit()
-      // }
-    },
     saveTitle() {
+      console.log('Saving title:', this.localTask.title)
+
       this.$store.dispatch('saveTaskTitle', {
         task: this.localTask,
         groupId: this.groupId,
       })
+      this.$emit('close')
+      this.quickEditPosition = {}
+      this.buttonPosition = {}
+      this.saveButtonPosition = {}
     },
     set(cmp, idx) {
       this.isDynamicModal = true
@@ -324,9 +328,7 @@ export default {
     togglecover() {
       this.isCoverActive = !this.isCoverActive
     },
-    closeDynamicModal() {
-      // this.isDynamicModal = false
-    },
+
     editTask() {
       const editedTask = JSON.parse(JSON.stringify(this.taskToEdit))
       const taskIdx = this.group.tasks.findIndex(
@@ -385,18 +387,18 @@ export default {
       (newVal, oldVal) => {
         if (newVal !== oldVal && newVal) {
           this.$nextTick(() => {
-            this.rect = this.$refs.quickEdit.getBoundingClientRect()
+            const rect = this.$refs.quickEdit.getBoundingClientRect()
 
             const distanceFromBottom =
-              window.innerHeight - (this.rect.top + this.rect.height)
+              window.innerHeight - (rect.top + rect.height)
 
             const distanceFromRight =
-              window.innerWidth - (this.rect.left + this.rect.width)
+              window.innerWidth - (rect.left + rect.width)
 
             this.isNearBottom = distanceFromBottom < 100
             const isNearRight = distanceFromRight < 200
             this.actionButtonsClass = isNearRight ? 'modal-left' : 'modal-right'
-            const adjustedTop = this.rect.top - 100
+            const adjustedTop = rect.top - 100
 
             this.$refs.titleInput.focus()
             this.$refs.titleInput.select()
@@ -404,38 +406,38 @@ export default {
             if (this.isNearBottom && isNearRight) {
               this.buttonPosition = {
                 position: 'fixed',
-                top: `${adjustedTop - this.rect.height + 115}px`,
-                left: `${this.rect.left - this.rect.width + 125}px`,
+                top: `${adjustedTop - rect.height + 115}px`,
+                left: `${rect.left - rect.width + 125}px`,
               }
             } else if (this.isNearBottom) {
               this.buttonPosition = {
                 position: 'fixed',
-                top: `${adjustedTop - this.rect.height + 115}px`,
-                left: `${this.rect.left + 256}px`,
+                top: `${adjustedTop - rect.height + 115}px`,
+                left: `${rect.left + 256}px`,
               }
             } else if (isNearRight) {
               this.buttonPosition = {
                 position: 'fixed',
                 top: `${adjustedTop}px`,
-                left: `${this.rect.left - this.rect.width + 80}px`,
+                left: `${rect.left - rect.width + 80}px`,
               }
             } else {
               this.buttonPosition = {
                 position: 'fixed',
                 top: `${adjustedTop}px`,
-                left: `${this.rect.left + this.rect.width}px`,
+                left: `${rect.left + rect.width}px`,
               }
             }
             this.saveButtonPosition = {
               position: 'fixed',
-              top: `${adjustedTop + this.rect.height}px`,
-              left: `${this.rect.left}px`,
+              top: `${adjustedTop + rect.height}px`,
+              left: `${rect.left}px`,
             }
 
             this.quickEditPosition = {
               position: 'fixed',
               top: `${adjustedTop}px`,
-              left: `${this.rect.left}px`,
+              left: `${rect.left}px`,
             }
           })
         }
