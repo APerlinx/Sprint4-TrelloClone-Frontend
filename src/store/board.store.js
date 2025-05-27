@@ -194,10 +194,9 @@ export const boardStore = {
         (group) => group.id === groupId
       )
       if (group) {
-        const taskToUpdate = group.tasks.find((t) => t.id === task.id)
-
-        if (taskToUpdate) {
-          taskToUpdate.title = task.title
+        const idx = group.tasks.findIndex((t) => t.id === task.id)
+        if (idx !== -1) {
+          group.tasks.splice(idx, 1, task)
         }
       }
     },

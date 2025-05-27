@@ -1,14 +1,37 @@
 <template>
-  <Container class="tasks-container" orientation="vertical" v-if="tasks" :get-child-payload="getChildPayload"
-    group-name="col-items" @drop="onDrop($event)" :dragClass="'card-ghost'" :drop-placeholder="dropPlaceholderOptions">
-    <AddTask v-if="openedFromModal" :groupId="groupId" @addTask="addTask" @close="closeTaskForm"
-      class="opend-from-modal" />
-    <Draggable v-for="item in items" :key="item.id" class="draggable-item" drag-class="card-ghost">
+  <Container
+    class="tasks-container"
+    orientation="vertical"
+    v-if="tasks"
+    :get-child-payload="getChildPayload"
+    group-name="col-items"
+    @drop="onDrop($event)"
+    :dragClass="'card-ghost'"
+    :drop-placeholder="dropPlaceholderOptions"
+  >
+    <AddTask
+      v-if="openedFromModal"
+      :groupId="groupId"
+      @addTask="addTask"
+      @close="closeTaskForm"
+      class="opend-from-modal"
+    />
+    <Draggable
+      v-for="item in items"
+      :key="item.id"
+      class="draggable-item"
+      drag-class="card-ghost"
+    >
       <div class="card">
-        <task-preview :task="item" :groupId="groupId" />
+        <task-preview :taskId="item.id" :groupId="groupId" />
       </div>
     </Draggable>
-    <AddTask v-if="showAddTask && !openedFromModal" :groupId="groupId" @addTask="addTask" @close="closeTaskForm" />
+    <AddTask
+      v-if="showAddTask && !openedFromModal"
+      :groupId="groupId"
+      @addTask="addTask"
+      @close="closeTaskForm"
+    />
   </Container>
 </template>
 
@@ -90,10 +113,6 @@ export default {
   transition: transform 0.18s ease;
   transform: rotateZ(0deg);
 }
-
-/* .draggable-item {
-  transition-duration: 80ms !important;
-} */
 
 .opend-from-modal {
   margin-bottom: 8px;

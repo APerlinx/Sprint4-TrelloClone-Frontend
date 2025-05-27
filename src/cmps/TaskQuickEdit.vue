@@ -26,7 +26,6 @@
             v-model="localTask.title"
             autofocus
             ref="titleInput"
-            @change="saveTitle"
           ></textarea>
         </div>
 
@@ -142,8 +141,8 @@ export default {
     Popper,
   },
   props: {
-    task: {
-      type: Object,
+    taskId: {
+      type: String,
     },
     groupId: {
       type: String,
@@ -208,17 +207,25 @@ export default {
     }
   },
   created() {
-    this.localTask = { ...this.task }
+    this.localTask = JSON.parse(JSON.stringify(this.task))
     this.setTask()
   },
   mounted() {
     document.addEventListener('click', this.onClickOutside)
   },
   unmounted() {
+    console.log('TaskQuickEdit unmounted unexpectedly')
+
     document.removeEventListener('click', this.onClickOutside)
   },
 
   computed: {
+    task() {
+      const board = this.$store.getters.getCurrBoard
+      const group = board.groups.find((group) => group.id === this.groupId)
+      return group?.tasks.find((task) => task.id === this.taskId)
+    },
+
     areLabelsVisible() {
       return this.$store.getters.areLabelsVisible
     },
@@ -239,16 +246,10 @@ export default {
     },
 
     saveTitle() {
-      console.log('Saving title:', this.localTask.title)
-
       this.$store.dispatch('saveTaskTitle', {
         task: this.localTask,
         groupId: this.groupId,
       })
-      this.$emit('close')
-      this.quickEditPosition = {}
-      this.buttonPosition = {}
-      this.saveButtonPosition = {}
     },
     set(cmp, idx) {
       this.isDynamicModal = true
@@ -285,6 +286,9 @@ export default {
       if (idx >= 0) this.taskToEdit.labels?.splice(idx, 1)
       else {
         this.taskToEdit.labels.push(labelId)
+      }
+      if (this.localTask?.title && this.taskToEdit) {
+        this.taskToEdit.title = this.localTask.title
       }
       this.$store.dispatch({ type: 'updateBoard', board: this.board })
     },
@@ -330,6 +334,10 @@ export default {
     },
 
     editTask() {
+      if (this.localTask?.title && this.taskToEdit) {
+        this.taskToEdit.title = this.localTask.title
+      }
+
       const editedTask = JSON.parse(JSON.stringify(this.taskToEdit))
       const taskIdx = this.group.tasks.findIndex(
         (task) => task.id === this.taskToEdit.id
@@ -386,6 +394,7 @@ export default {
       () => this.quickEditDisplay,
       (newVal, oldVal) => {
         if (newVal !== oldVal && newVal) {
+          this.localTask = JSON.parse(JSON.stringify(this.task))
           this.$nextTick(() => {
             const rect = this.$refs.quickEdit.getBoundingClientRect()
 

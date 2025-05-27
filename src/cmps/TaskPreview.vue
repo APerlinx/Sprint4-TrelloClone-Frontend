@@ -117,7 +117,7 @@
   </section>
 
   <TaskQuickEdit
-    :task="task"
+    :taskId="taskId"
     :groupId="groupId"
     :quickEditDisplay="quickEditDisplay"
     :getLabel="getLabel"
@@ -142,8 +142,8 @@ export default {
       type: String,
       required: true,
     },
-    task: {
-      type: Object,
+    taskId: {
+      type: String,
       required: true,
     },
   },
@@ -156,6 +156,11 @@ export default {
     }
   },
   computed: {
+    task() {
+      const board = this.$store.getters.getCurrBoard
+      const group = board.groups.find((g) => g.id === this.groupId)
+      return group?.tasks.find((t) => t.id === this.taskId)
+    },
     taskMembers() {
       if (!this.task.members || !this.boardMembers) return []
 
