@@ -23,7 +23,7 @@
             :showTaskForm="showTaskForm"
             :currentGroupId="currentGroupId"
             :isZoomedOut="isZoomedOut"
-            @update-title="updateGroup"
+            @updateGroupTitle="onUpdateGroupTitle"
             @removeGroup="removeGroup"
             @duplicateGroup="duplicateGroup"
             @watch="watchGroup"
@@ -185,7 +185,6 @@ export default {
     if (!this.groups.length && boardId) {
       this.groups = this.$store.getters.getGroupsByBoardId(boardId)
     }
-
     this.groups = JSON.parse(JSON.stringify(this.groups))
     this.currBoard = this.$store.getters.getCurrBoard
     // socketService.on(SOCKET_EVENT_ADD_MSG, this.addGroup);
@@ -249,13 +248,16 @@ export default {
         showErrorMsg('Cannot remove group')
       }
     },
-    async updateGroup(group, changes) {
+    async onUpdateGroupTitle({ groupId, newTitle }) {
       try {
-        group = { ...group, ...changes }
-        await this.$store.dispatch(getActionUpdateGroup(group))
+        const group = this.groups.find((group) => group.id === groupId)
+        if (group) {
+          group.title = newTitle
+          await this.$store.dispatch('saveGroupTitle', { groupId, newTitle })
+        }
         showSuccessMsg('Group updated')
       } catch (err) {
-        console.log(err)
+        console.warn('Error updating a group')
         showErrorMsg('Cannot update group')
       }
     },

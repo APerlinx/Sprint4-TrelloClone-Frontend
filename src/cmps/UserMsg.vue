@@ -4,12 +4,13 @@
   </div>
 </template>
 
-
 <script>
-import { eventBus, SHOW_MSG } from "../services/event-bus.service.js"
+import { eventBus, SHOW_MSG } from '../services/event-bus.service.js'
 
 export default {
   created() {
+    console.log('enter')
+
     eventBus.on(SHOW_MSG, (msg) => {
       this.msg = msg
       var delay = msg.delay || 2000

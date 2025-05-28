@@ -17,7 +17,8 @@
       class="opend-from-modal"
     />
     <!-- Task Preview -->
-    <Draggable
+    <!-- <Draggable></Draggable> The div below was Draggable tag but drag n'drop don't work properly for tasks / Commented out until it's FIXED! -->
+    <div
       v-for="item in items"
       :key="item.id"
       class="draggable-item"
@@ -26,7 +27,7 @@
       <div class="card">
         <task-preview :taskId="item.id" :groupId="groupId" />
       </div>
-    </Draggable>
+    </div>
     <AddTask
       v-if="showAddTask && !openedFromModal"
       :groupId="groupId"

@@ -1,6 +1,6 @@
 <template>
   <div v-if="quickEditDisplay">
-    <section class="task-preview-container">
+    <section class="quickEdit-container">
       <div class="quickEditScreen"></div>
       <div class="quickEdit" ref="quickEdit" :style="quickEditPosition">
         <TaskCover :task="taskToEdit" />
@@ -81,18 +81,21 @@
           </div>
         </div>
       </div>
-
-      <div class="save-button" ref="saveButton" :style="saveButtonPosition">
+      <div
+        class="save-button"
+        :class="{ 'save-button--pushed': needsExtraSpace }"
+        ref="saveButton"
+        :style="saveButtonPosition"
+      >
         <button @click="saveTitle" :disabled="isSaving">Save</button>
       </div>
-
       <div
-        class="action-buttons"
+        class="action-quickEdit-btn"
         :class="actionButtonsClass"
         v-if="quickEditDisplay"
         :style="buttonPosition"
       >
-        <button @click="openTaskDetails">
+        <button class="btn-action" @click="openTaskDetails">
           <span class="card-icon"></span>Open card
         </button>
 
@@ -100,6 +103,7 @@
           v-for="btn in actionBtns"
           :key="btn.type"
           @click.stop="openModal(btn.type)"
+          class="btn-action"
         >
           <span :class="btn.icon"></span>
           {{ btn.txt }}
@@ -107,7 +111,7 @@
         <div @click.stop="removeTask">
           <span class="archive-icon"></span>
         </div>
-        <button @click="closeQuickEdit">Close</button>
+        <button @click="closeQuickEdit" class="btn-action">Close</button>
 
         <DynamicModal
           v-if="cmpType"
@@ -205,6 +209,7 @@ export default {
       coverColor: '',
       currColor: '',
       isSaving: false,
+      needsExtraSpace: false,
     }
   },
   created() {
@@ -256,7 +261,6 @@ export default {
         this.isSaving = false
       }
     },
-
     set(cmp, idx) {
       this.isDynamicModal = true
       this.actionCmpType = cmp
@@ -275,6 +279,11 @@ export default {
       this.editTask()
     },
     addDueDate(date) {
+      const isValidDate = !isNaN(date)
+      if (!this.taskToEdit.members.length) {
+        this.needsExtraSpace = isValidDate && !this.taskToEdit.members.length
+      }
+
       this.taskToEdit.dueDate = date
       this.editTask()
     },
@@ -345,8 +354,10 @@ export default {
 
       if (idx >= 0) {
         members.splice(idx, 1)
+        !members.length ? (this.needsExtraSpace = false) : ''
       } else {
         members.push(clickedMember)
+        members.length === 1 ? (this.needsExtraSpace = true) : ''
       }
 
       this.taskToEdit.members = members
@@ -360,6 +371,19 @@ export default {
     },
     togglecover() {
       this.isCoverActive = !this.isCoverActive
+    },
+    setSaveButtonPosition() {
+      const el = this.$refs.quickEdit
+      if (!el) return
+
+      const rect = el.getBoundingClientRect()
+      const adjustedTop = rect.top - 100
+
+      this.saveButtonPosition = {
+        position: 'fixed',
+        top: `${adjustedTop + rect.height}px`,
+        left: `${rect.left}px`,
+      }
     },
   },
   mounted() {
@@ -410,11 +434,7 @@ export default {
                 left: `${rect.left + rect.width}px`,
               }
             }
-            this.saveButtonPosition = {
-              position: 'fixed',
-              top: `${adjustedTop + rect.height}px`,
-              left: `${rect.left}px`,
-            }
+            this.setSaveButtonPosition()
 
             this.quickEditPosition = {
               position: 'fixed',

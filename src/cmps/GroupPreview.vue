@@ -5,8 +5,9 @@
         <input
           class="group-title"
           type="text"
-          :value="group.title"
-          @input="updateTitle($event.target.value)"
+          v-model="localGroupTitle"
+          @blur="emitGroupTitle"
+          @keyup.enter="emitGroupTitle"
         />
         <div>
           <span class="icon watch" v-if="group.isWatched"></span>
@@ -50,7 +51,6 @@
           <button class="action" @click="handleAction('watch')">
             Watch <span class="watch-on" v-if="group.isWatched"></span>
           </button>
-          <hr />
         </div>
       </div>
     </div>
@@ -94,6 +94,7 @@ export default {
       modalTop: 0,
       modalLeft: 0,
       openedFromModal: false,
+      localGroupTitle: this.group.title,
     }
   },
   components: {
@@ -139,6 +140,12 @@ export default {
     closeTaskForm() {
       this.$emit('closeTaskForm', this.openedFromModal)
       this.openedFromModal = false
+    },
+    emitGroupTitle() {
+      this.$emit('updateGroupTitle', {
+        groupId: this.group.id,
+        newTitle: this.localGroupTitle,
+      })
     },
   },
   directives: {

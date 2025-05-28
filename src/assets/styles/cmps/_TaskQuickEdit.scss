@@ -1,4 +1,4 @@
-.task-preview-container {
+.quickEdit-container {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -91,13 +91,13 @@
         }
     }
 
-    .action-buttons {
+    .action-quickEdit-btn {
         display: flex;
         flex-direction: column;
         z-index: 999;
         width: max-content;
         justify-content: flex-start;
-
+        margin-top: -0.3rem;
         &.modal-right {
             align-items: flex-start;
             button:hover {
@@ -112,7 +112,7 @@
             }
         }
 
-        button {
+        .btn-action {
             width: fit-content;
             color: white;
             background-color: #0009;
@@ -214,8 +214,12 @@
         }
     }
     button:disabled {
-        background-color: #68696b;
+        background-color: #3e3f42;
     }
+}
+
+.save-button--pushed {
+    margin-top: 1.6rem;
 }
 
 .labels {

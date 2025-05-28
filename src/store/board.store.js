@@ -211,6 +211,12 @@ export const boardStore = {
         group.tasks[taskIdx][key] = task[key]
       }
     },
+    saveGroupTitle(state, { groupId, newTitle }) {
+      const group = state.currentBoard.groups.find(
+        (group) => group.id === groupId
+      )
+      if (group) group.title = newTitle
+    },
   },
 
   actions: {
@@ -556,6 +562,16 @@ export const boardStore = {
         return updatedBoard
       } catch (err) {
         console.error('Failed to save board:', err)
+        throw err
+      }
+    },
+    async saveGroupTitle({ commit, state, dispatch }, { groupId, newTitle }) {
+      try {
+        commit('saveGroupTitle', { groupId, newTitle })
+        await boardService.save(state.currentBoard)
+        dispatch('addActivity', { activity: 'Changed group title', groupId })
+      } catch (err) {
+        console.error('Failed to save group title:', err)
         throw err
       }
     },

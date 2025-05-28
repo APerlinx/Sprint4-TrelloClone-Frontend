@@ -23,12 +23,14 @@ dist-ssr
 *.sln
 *.sw?
 
-# 6 Things to make this app good enough(My part)!
-
-# //TODO: EDIT TITLE OF THE GROUPS NOT WORKING!
-# //TODO: EDIT TASK IN QuickEdit not working proprely (You are able to edit but can't save it afterwards)! (In progress now)
+# //TODO: EDIT TITLE OF THE GROUPS NOT WORKING! (DONE)
+# //TODO: EDIT TASK IN QuickEdit not working proprely (You are able to edit but can't save it afterwards)! (Done)
 # //TODO: ALSO in QuickEdit placment of the modal ( Edit labels, change cover , all of that should be placed better!) (DONE!)
 # //TODO: To be able to exit the QuickEdit on every click outside the the edit or have exit button! (DONE! , added close btn)
-# //TODO: Right now when you add label in QuickEdit it exit immediatly! not wanted ! fix this
-# //TODO: Disable drag and drop on QuickEDIT
-# //TODO: Edit memeber not working in quickEdit
+# //TODO: Right now when you add label in QuickEdit it exit immediatly! not wanted ! fix this (Done)
+# //TODO: Edit memeber not working in quickEdit (Done)
+
+# //TODO: Clean code (You will do it every time you finish the work on this project every time a little bit)
+# //TODO: Disable drag and drop on QuickEDIT (Pretty advanced so do it in the future)
+
+#//TODO: make a plan that once a week or two you work for an hour on this project improve the code and fix ui/ux no bugs! make it smooth dont add nothing!
