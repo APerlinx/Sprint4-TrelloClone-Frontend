@@ -293,7 +293,6 @@ export default {
 
       this.editTask()
     },
-
     setTask() {
       this.taskToEdit = JSON.parse(JSON.stringify(this.task))
     },
@@ -340,23 +339,17 @@ export default {
       )
     },
     toggleMember(clickedMember) {
-      if (!this.taskToEdit.members) {
-        this.taskToEdit.members = []
-        this.taskToEdit.members.push(clickedMember)
+      const members = [...(this.taskToEdit.members || [])]
+
+      const idx = members.findIndex((member) => member.id === clickedMember.id)
+
+      if (idx >= 0) {
+        members.splice(idx, 1)
       } else {
-        if (
-          this.taskToEdit.members.some(
-            (member) => member.id === clickedMember.id
-          )
-        ) {
-          const idx = this.taskToEdit.members.findIndex(
-            (member) => member.id === clickedMember.id
-          )
-          this.taskToEdit.members.splice(idx, 1)
-        } else {
-          this.taskToEdit.members.push(clickedMember)
-        }
+        members.push(clickedMember)
       }
+
+      this.taskToEdit.members = members
       this.editTask()
     },
     toggleStatus() {
