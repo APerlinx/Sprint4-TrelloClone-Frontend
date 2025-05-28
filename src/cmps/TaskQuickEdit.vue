@@ -83,7 +83,7 @@
       </div>
 
       <div class="save-button" ref="saveButton" :style="saveButtonPosition">
-        <button @click="saveTitle">Save</button>
+        <button @click="saveTitle" :disabled="isSaving">Save</button>
       </div>
 
       <div
@@ -204,6 +204,7 @@ export default {
       isCoverActive: false,
       coverColor: '',
       currColor: '',
+      isSaving: false,
     }
   },
   created() {
@@ -239,12 +240,23 @@ export default {
       this.buttonPosition = {}
       this.saveButtonPosition = {}
     },
-    saveTitle() {
-      this.$store.dispatch('saveTaskTitle', {
-        task: this.localTask,
-        groupId: this.groupId,
-      })
+    async saveTitle() {
+      if (this.isSaving) return
+      this.isSaving = true
+      try {
+        await this.$store.dispatch('saveTaskTitle', {
+          task: this.localTask,
+          groupId: this.groupId,
+        })
+        setTimeout(() => {
+          this.isSaving = false
+        }, 1000)
+      } catch (err) {
+        console.error('Failed to save:', err)
+        this.isSaving = false
+      }
     },
+
     set(cmp, idx) {
       this.isDynamicModal = true
       this.actionCmpType = cmp

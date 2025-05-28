@@ -189,11 +189,8 @@
 }
 
 .save-button {
-    position: absolute;
-    //   top: 110px;
-    //   left: -0.1px;
-    margin-top: 8px;
     z-index: 50;
+
     &:hover {
         background-color: transparent;
         border: none;
@@ -215,6 +212,9 @@
             box-shadow: none;
             color: #ffffff;
         }
+    }
+    button:disabled {
+        background-color: #68696b;
     }
 }
 
