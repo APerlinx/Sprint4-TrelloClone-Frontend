@@ -3,8 +3,9 @@
     <section class="task-preview-container">
       <div class="quickEditScreen"></div>
       <div class="quickEdit" ref="quickEdit" :style="quickEditPosition">
-        <TaskCover :task="task" />
+        <TaskCover :task="taskToEdit" />
 
+        <!-- Task's Labels  -->
         <div class="labels" @click.stop>
           <div
             v-for="labelId in task.labels"
@@ -111,14 +112,14 @@
         <DynamicModal
           v-if="cmpType"
           :actionCmpType="cmpType"
-          :taskToEdit="localTask"
+          :taskToEdit="taskToEdit"
           :actionCmpName="CmpName"
           @toggleMember="toggleMember"
           @saveLabel="saveLabel"
           @removeLabel="removeLabel"
-          @updateLable="updateLable"
+          @updateLabel="updateLabel"
           @DueDate="addDueDate"
-          @setCover="setCover"
+          @setCover="onSetCover"
           @closeDynamicModal="closeDynamicModal"
         />
       </div>
@@ -128,11 +129,9 @@
 
 <script>
 import { watch } from 'vue'
-
 import DynamicModal from '../views/DynamicModal.vue'
 import TaskCover from './TaskCover.vue'
 import Popper from 'vue3-popper'
-import { boardService } from '../services/board.service.js'
 
 export default {
   name: 'task-preview',
@@ -211,16 +210,12 @@ export default {
     this.localTask = JSON.parse(JSON.stringify(this.task))
     this.setTask()
   },
-  beforeUnmount() {
-    console.warn('❗ TaskQuickEdit is being unmounted!')
-  },
   computed: {
     task() {
       const board = JSON.parse(JSON.stringify(this.$store.getters.getCurrBoard))
       const group = board.groups.find((group) => group.id === this.groupId)
       return group?.tasks.find((task) => task.id === this.taskId)
     },
-
     areLabelsVisible() {
       return this.$store.getters.areLabelsVisible
     },
@@ -233,13 +228,17 @@ export default {
       this.isDynamicModal = false
       this.cmpType = null
     },
-    closeQuickEdit() {
-      this.$emit('closeQuickEdit')
+    async closeQuickEdit() {
+      try {
+        await this.$store.dispatch('saveUpdatedBoard')
+        this.$emit('closeQuickEdit')
+      } catch (error) {
+        console.error('Error closing quick edit')
+      }
       this.quickEditPosition = {}
       this.buttonPosition = {}
       this.saveButtonPosition = {}
     },
-
     saveTitle() {
       this.$store.dispatch('saveTaskTitle', {
         task: this.localTask,
@@ -251,20 +250,15 @@ export default {
       this.actionCmpType = cmp
       this.actionCmpName = this.dynamicNames[idx]
     },
-
-    setCover(cover) {
-      if (this.taskToEdit.hasOwnProperty('cover')) {
-        this.taskToEdit.cover = cover
-      } else {
-        this.taskToEdit = { ...this.taskToEdit, cover: cover }
-      }
+    onSetCover(cover) {
+      this.taskToEdit.cover = cover
       this.editTask()
     },
     removeLabel(board) {
       this.board = board
       this.editTask()
     },
-    updateLable(board) {
+    updateLabel(board) {
       this.board = board
       this.editTask()
     },
@@ -286,62 +280,19 @@ export default {
 
       this.editTask()
     },
-    toggleMember(clickedMember) {
-      if (!this.taskToEdit.members) {
-        this.taskToEdit.members = []
-        this.taskToEdit.members.push(clickedMember)
-      } else {
-        if (
-          this.taskToEdit.members.some(
-            (member) => member.id === clickedMember.id
-          )
-        ) {
-          const idx = this.taskToEdit.members.findIndex(
-            (member) => member.id === clickedMember.id
-          )
-          this.taskToEdit.members.splice(idx, 1)
-        } else {
-          this.taskToEdit.members.push(clickedMember)
-        }
-      }
-      this.editTask()
+    setTask() {
+      this.taskToEdit = JSON.parse(JSON.stringify(this.task))
     },
-    async setTask() {
-      try {
-        if (!this.board) {
-          // const board = this.$store.getters.getCurrBoard
-          // this.board = JSON.parse(JSON.stringify(board))
-          const boardId = this.$route.params.boardId
-          this.board = JSON.parse(
-            JSON.stringify(await boardService.getById(boardId))
-          )
-        }
-
-        const taskId = this.task.id
-        const groupId = this.groupId
-
-        this.group = this.board.groups.find((group) => group.id === groupId)
-        this.taskToEdit = this.group.tasks.find((task) => task.id === taskId)
-      } catch (err) {
-        console.log('error in setTask', err)
-      }
-    },
-    togglecover() {
-      this.isCoverActive = !this.isCoverActive
-    },
-
     editTask() {
       if (this.localTask?.title && this.taskToEdit) {
         this.taskToEdit.title = this.localTask.title
       }
 
-      // Dispatch the new lightweight action instead of replacing the board
-      this.$store.dispatch('updateTaskInPlace', {
+      this.$store.commit('updateTaskInPlace', {
         groupId: this.groupId,
         task: this.taskToEdit,
       })
     },
-
     openModal(type) {
       switch (type) {
         case 'LabelsPicker':
@@ -368,17 +319,40 @@ export default {
           break
       }
     },
+    openTaskDetails() {
+      const boardId = this.$route.params.boardId
+      this.$router.push(
+        `/details/${boardId}/group/${this.groupId}/task/${this.task.id}`
+      )
+    },
+    toggleMember(clickedMember) {
+      if (!this.taskToEdit.members) {
+        this.taskToEdit.members = []
+        this.taskToEdit.members.push(clickedMember)
+      } else {
+        if (
+          this.taskToEdit.members.some(
+            (member) => member.id === clickedMember.id
+          )
+        ) {
+          const idx = this.taskToEdit.members.findIndex(
+            (member) => member.id === clickedMember.id
+          )
+          this.taskToEdit.members.splice(idx, 1)
+        } else {
+          this.taskToEdit.members.push(clickedMember)
+        }
+      }
+      this.editTask()
+    },
     toggleStatus() {
       this.$emit('status-toggled')
     },
     toggleLabel() {
       this.$store.commit('toggleLabelsVisibility')
     },
-    openTaskDetails() {
-      const boardId = this.$route.params.boardId
-      this.$router.push(
-        `/details/${boardId}/group/${this.groupId}/task/${this.task.id}`
-      )
+    togglecover() {
+      this.isCoverActive = !this.isCoverActive
     },
   },
   mounted() {

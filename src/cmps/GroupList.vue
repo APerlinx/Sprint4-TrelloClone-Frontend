@@ -126,7 +126,6 @@
 
 <script>
 import { showErrorMsg, showSuccessMsg } from '../services/event-bus.service.js'
-// import { boardService } from "../services/board.service.local.js";
 import { boardService } from '../services/board.service.js'
 import { clickOutsideDirective } from '../directives/index.js'
 import { Container, Draggable } from 'vue3-smooth-dnd'

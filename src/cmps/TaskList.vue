@@ -16,6 +16,7 @@
       @close="closeTaskForm"
       class="opend-from-modal"
     />
+    <!-- Task Preview -->
     <Draggable
       v-for="item in items"
       :key="item.id"
@@ -69,10 +70,6 @@ export default {
       },
     }
   },
-  unmounted() {
-    console.warn('TaskList unmounted!')
-  },
-
   watch: {
     tasks: {
       immediate: true,

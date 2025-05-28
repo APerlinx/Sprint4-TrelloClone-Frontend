@@ -1,5 +1,4 @@
 <template>
-  <!-- @coverFull="handleCoverFull" -->
   <TaskCover
     :task="task"
     v-if="!task.cover?.isFull"
@@ -115,7 +114,7 @@
       </div>
     </li>
   </section>
-
+  <!-- QuickEdit modal/window -->
   <TaskQuickEdit
     :taskId="taskId"
     :groupId="groupId"
@@ -132,7 +131,6 @@
 
 <script>
 import { format } from 'date-fns'
-
 import TaskCover from './TaskCover.vue'
 import TaskQuickEdit from './TaskQuickEdit.vue'
 
@@ -154,9 +152,6 @@ export default {
       boardMembers: null,
       fullCoverStyle: {},
     }
-  },
-  unmounted() {
-    console.warn('TaskPreview unmounted!')
   },
 
   computed: {

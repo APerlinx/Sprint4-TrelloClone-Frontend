@@ -140,7 +140,6 @@ export const boardStore = {
         existingTask[key] = task[key]
       }
     },
-
     removeTask(state, { task }) {
       const taskIdx = state.currentBoard.groups[task.groupIdx].tasks.findIndex(
         (currTask) => currTask._id === task.taskId
@@ -550,8 +549,15 @@ export const boardStore = {
         throw err
       }
     },
-    updateTaskInPlace({ commit }, { groupId, task }) {
-      commit('updateTaskInPlace', { groupId, task })
+    async saveUpdatedBoard({ state, commit }) {
+      try {
+        const updatedBoard = await boardService.save(state.currentBoard)
+        commit('updateBoard', { board: updatedBoard })
+        return updatedBoard
+      } catch (err) {
+        console.error('Failed to save board:', err)
+        throw err
+      }
     },
   },
 

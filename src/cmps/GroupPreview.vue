@@ -28,7 +28,7 @@
       </div>
       <slot name="actions"></slot>
     </div>
-
+    <!-- Group Modal (Remove group,watch,add card) -->
     <div
       v-if="showModal"
       class="modal"
@@ -44,13 +44,9 @@
           <button class="action" @click="handleAction('addCard')">
             Add card...
           </button>
-          <button class="action" @click="handleAction('duplicateGroup')">
-            Duplicate group...
-          </button>
           <button class="action" @click="handleAction('removeGroup')">
             Remove group...
           </button>
-
           <button class="action" @click="handleAction('watch')">
             Watch <span class="watch-on" v-if="group.isWatched"></span>
           </button>
