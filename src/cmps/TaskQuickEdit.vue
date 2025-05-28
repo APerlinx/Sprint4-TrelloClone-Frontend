@@ -132,6 +132,7 @@ import { watch } from 'vue'
 import DynamicModal from '../views/DynamicModal.vue'
 import TaskCover from './TaskCover.vue'
 import Popper from 'vue3-popper'
+import { boardService } from '../services/board.service.js'
 
 export default {
   name: 'task-preview',
@@ -210,18 +211,12 @@ export default {
     this.localTask = JSON.parse(JSON.stringify(this.task))
     this.setTask()
   },
-  mounted() {
-    document.addEventListener('click', this.onClickOutside)
+  beforeUnmount() {
+    console.warn('❗ TaskQuickEdit is being unmounted!')
   },
-  unmounted() {
-    console.log('TaskQuickEdit unmounted unexpectedly')
-
-    document.removeEventListener('click', this.onClickOutside)
-  },
-
   computed: {
     task() {
-      const board = this.$store.getters.getCurrBoard
+      const board = JSON.parse(JSON.stringify(this.$store.getters.getCurrBoard))
       const group = board.groups.find((group) => group.id === this.groupId)
       return group?.tasks.find((task) => task.id === this.taskId)
     },
@@ -239,7 +234,7 @@ export default {
       this.cmpType = null
     },
     closeQuickEdit() {
-      this.$emit('close')
+      this.$emit('closeQuickEdit')
       this.quickEditPosition = {}
       this.buttonPosition = {}
       this.saveButtonPosition = {}
@@ -265,7 +260,6 @@ export default {
       }
       this.editTask()
     },
-
     removeLabel(board) {
       this.board = board
       this.editTask()
@@ -276,7 +270,6 @@ export default {
     },
     addDueDate(date) {
       this.taskToEdit.dueDate = date
-
       this.editTask()
     },
     saveLabel(labelId) {
@@ -290,7 +283,8 @@ export default {
       if (this.localTask?.title && this.taskToEdit) {
         this.taskToEdit.title = this.localTask.title
       }
-      this.$store.dispatch({ type: 'updateBoard', board: this.board })
+
+      this.editTask()
     },
     toggleMember(clickedMember) {
       if (!this.taskToEdit.members) {
@@ -310,14 +304,17 @@ export default {
           this.taskToEdit.members.push(clickedMember)
         }
       }
-      // this.editTask()
+      this.editTask()
     },
-    setTask() {
+    async setTask() {
       try {
         if (!this.board) {
-          // TODO : find a way to fetch the board only once probably using an action
-          const board = this.$store.getters.getCurrBoard
-          this.board = JSON.parse(JSON.stringify(board))
+          // const board = this.$store.getters.getCurrBoard
+          // this.board = JSON.parse(JSON.stringify(board))
+          const boardId = this.$route.params.boardId
+          this.board = JSON.parse(
+            JSON.stringify(await boardService.getById(boardId))
+          )
         }
 
         const taskId = this.task.id
@@ -338,18 +335,13 @@ export default {
         this.taskToEdit.title = this.localTask.title
       }
 
-      const editedTask = JSON.parse(JSON.stringify(this.taskToEdit))
-      const taskIdx = this.group.tasks.findIndex(
-        (task) => task.id === this.taskToEdit.id
-      )
-      this.group.tasks.splice(taskIdx, 1, this.taskToEdit)
+      // Dispatch the new lightweight action instead of replacing the board
+      this.$store.dispatch('updateTaskInPlace', {
+        groupId: this.groupId,
+        task: this.taskToEdit,
+      })
+    },
 
-      this.$store.dispatch({ type: 'updateBoard', board: this.board })
-    },
-    closeComponent() {
-      this.taskTitle = ''
-      // this.$emit('close')
-    },
     openModal(type) {
       switch (type) {
         case 'LabelsPicker':

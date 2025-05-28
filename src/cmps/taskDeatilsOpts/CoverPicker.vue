@@ -60,11 +60,12 @@
   </div>
 
   <div v-if="isCover" class="remove-cover">
-    <button
-      @click="(isCover = false), (coverToEdit.color = ''), (lastPick = '')"
+    <div
+      @click=";(isCover = false), (coverToEdit.color = ''), (lastPick = '')"
+      role="button"
     >
       Remove cover
-    </button>
+    </div>
   </div>
 
   <h6 class="colors-title">Colors</h6>
@@ -110,153 +111,153 @@
 </template>
 
 <script>
-import ImgUploader from "../../cmps/ImgUploader.vue";
-import debounce from "lodash.debounce";
+import ImgUploader from '../../cmps/ImgUploader.vue'
+import debounce from 'lodash.debounce'
 
 export default {
   props: {
     taskToEdit: Object,
   },
   created() {
-    this.debouncedGetResult = debounce(this.fetchListOfPhotos, 1000);
-    this.fetchListOfPhotos(this.query);
+    this.debouncedGetResult = debounce(this.fetchListOfPhotos, 1000)
+    this.fetchListOfPhotos(this.query)
   },
   data() {
     return {
       coverToEdit: {
-        color: "",
-        img: "",
+        color: '',
+        img: '',
         isFull: false,
       },
-      accesKey: "MW3WlTYHFpvQZJwkJp360WPZFpDiNui3_1sdi4VjuhY",
+      accesKey: 'MW3WlTYHFpvQZJwkJp360WPZFpDiNui3_1sdi4VjuhY',
       imgUrls: [],
-      query: "",
+      query: '',
       isCover: false,
-      lastPick: "",
+      lastPick: '',
       colorOptions: [
         //green
-        "#f87462",
+        '#f87462',
 
         //gold
-        "#e1b304",
+        '#e1b304',
 
         //orange
-        "#faa63d",
+        '#faa63d',
 
         //light-orange
-        "#faa73d",
+        '#faa73d',
 
         //purple
-        "#9f90ef",
+        '#9f90ef',
 
         //blue
-        "#589dff",
+        '#589dff',
 
         //tourq
-        "#61c7d2",
+        '#61c7d2',
 
         //pink
-        "#f77cb2",
+        '#f77cb2',
 
         //grey
-        "#8591a2",
+        '#8591a2',
 
         //red
-        "#e85151",
+        '#e85151',
       ],
       colorClass: [
-        "green",
-        "gold",
-        "orange",
-        "light-orange",
-        "purple",
-        "blue",
-        "tourq",
-        "pink",
-        "grey",
-        "red",
+        'green',
+        'gold',
+        'orange',
+        'light-orange',
+        'purple',
+        'blue',
+        'tourq',
+        'pink',
+        'grey',
+        'red',
       ],
-    };
+    }
   },
   methods: {
     onUploaded(imgUrl) {
-      this.coverToEdit.color = "";
-      this.coverToEdit.img = imgUrl;
-      this.setCover();
+      this.coverToEdit.color = ''
+      this.coverToEdit.img = imgUrl
+      this.setCover()
     },
     async fetchListOfPhotos() {
       try {
-        let query;
+        let query
         if (this.query) query = this.query
 
         const response = await fetch(
           `https://api.unsplash.com/search/photos?client_id=${this.accesKey}&query=${query}`
-        );
-        const json = await response.json();
-        const imageUrls = json.results.map((img) => img.urls.regular);
+        )
+        const json = await response.json()
+        const imageUrls = json.results.map((img) => img.urls.regular)
 
-        const res = imageUrls.splice(0, 6);
-        this.imgUrls = res;
+        const res = imageUrls.splice(0, 6)
+        this.imgUrls = res
       } catch (err) {
-        console.log("Cannot load photos", err);
-        throw err;
+        console.log('Cannot load photos', err)
+        throw err
       }
     },
     setBgColor(color) {
       if (this.lastPick === color && this.isCover) {
-        this.isCover = false;
-        this.lastPick = "";
-        this.coverToEdit.color = "";
+        this.isCover = false
+        this.lastPick = ''
+        this.coverToEdit.color = ''
       } else {
-        this.coverToEdit.img = "";
-        this.isCover = true;
-        this.lastPick = color;
-        this.coverToEdit.color = color;
+        this.coverToEdit.img = ''
+        this.isCover = true
+        this.lastPick = color
+        this.coverToEdit.color = color
       }
-      this.setCover();
+      this.setCover()
     },
     setBgImg(img) {
       if (this.lastPick === img && this.isCover) {
-        this.isCover = false;
-        this.lastPick = "";
-        this.coverToEdit.img = "";
+        this.isCover = false
+        this.lastPick = ''
+        this.coverToEdit.img = ''
       } else {
-        this.coverToEdit.color = "";
-        this.isCover = true;
-        this.lastPick = img;
-        this.coverToEdit.img = img;
+        this.coverToEdit.color = ''
+        this.isCover = true
+        this.lastPick = img
+        this.coverToEdit.img = img
       }
-      this.setCover();
+      this.setCover()
     },
     setLayout(state) {
-      this.coverToEdit.isFull = state;
-      this.setCover();
+      this.coverToEdit.isFull = state
+      this.setCover()
     },
     setCover() {
-      this.$emit("setCover", this.coverToEdit);
+      this.$emit('setCover', this.coverToEdit)
     },
   },
 
   computed: {
     hasCover() {
       if (this.taskToEdit.cover?.color) {
-        return this.taskToEdit.cover?.color;
+        return this.taskToEdit.cover?.color
       } else if (this.taskToEdit.cover?.img) {
-        return `url(${this.taskToEdit.cover?.img})`;
+        return `url(${this.taskToEdit.cover?.img})`
       } else {
-        return "";
+        return ''
       }
     },
   },
 
   watch: {
     query() {
-      this.debouncedGetResult();
+      this.debouncedGetResult()
     },
   },
 
   components: {
     ImgUploader,
   },
-};
+}
 </script>

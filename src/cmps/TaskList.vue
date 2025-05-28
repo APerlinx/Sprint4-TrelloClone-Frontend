@@ -69,6 +69,10 @@ export default {
       },
     }
   },
+  unmounted() {
+    console.warn('TaskList unmounted!')
+  },
+
   watch: {
     tasks: {
       immediate: true,

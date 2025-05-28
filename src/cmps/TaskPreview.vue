@@ -125,7 +125,7 @@
     :doneChecklists="doneChecklists"
     :dueDateStatus="dueDateStatus"
     :formatDate="formatDate"
-    @close="quickEditDisplay = false"
+    @closeQuickEdit="quickEditDisplay = false"
     @status-toggled="toggleStatus"
   />
 </template>
@@ -155,6 +155,10 @@ export default {
       fullCoverStyle: {},
     }
   },
+  unmounted() {
+    console.warn('TaskPreview unmounted!')
+  },
+
   computed: {
     task() {
       const board = this.$store.getters.getCurrBoard

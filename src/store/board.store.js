@@ -83,8 +83,9 @@ export const boardStore = {
     },
     updateBoard(state, { board }) {
       const idx = state.boards.findIndex((c) => c._id === board._id)
-      state.boards.splice(idx, 1, board)
-      state.currentBoard = board
+      if (idx !== -1) state.boards.splice(idx, 1, board)
+
+      Object.assign(state.currentBoard, board)
     },
     removeBoard(state, { boardId }) {
       state.boards = state.boards.filter((board) => board._id !== boardId)
@@ -128,20 +129,18 @@ export const boardStore = {
       }
     },
     setTask(state, { groupId, task }) {
-      if (state.currentGroup) groupId = state.currentGroup._id
-      const groupIdx = state.currentBoard.groups.findIndex(
-        (group) => group._id === groupId
-      )
-      if (task._id) {
-        const taskIdx = state.currentBoard.groups[groupIdx].tasks.findIndex(
-          (currTask) => currTask._id === task._id
-        )
-        state.currentBoard.groups[groupIdx].tasks.splice(taskIdx, 1, task)
-      } else {
-        task._id = utilService.makeId()
-        state.currentBoard.groups[groupIdx].tasks.push(task)
+      const group = state.currentBoard.groups.find((g) => g.id === groupId)
+      if (!group) return
+
+      const existingTask = group.tasks.find((t) => t.id === task.id)
+      if (!existingTask) return
+
+      // Update task properties without replacing the object
+      for (const key in task) {
+        existingTask[key] = task[key]
       }
     },
+
     removeTask(state, { task }) {
       const taskIdx = state.currentBoard.groups[task.groupIdx].tasks.findIndex(
         (currTask) => currTask._id === task.taskId
@@ -198,6 +197,19 @@ export const boardStore = {
         if (idx !== -1) {
           group.tasks.splice(idx, 1, task)
         }
+      }
+    },
+    updateTaskInPlace(state, { groupId, task }) {
+      const group = state.currentBoard.groups.find(
+        (group) => group.id === groupId
+      )
+      if (!group) return
+
+      const taskIdx = group.tasks.findIndex((t) => t.id === task.id)
+      if (taskIdx === -1) return
+
+      for (const key in task) {
+        group.tasks[taskIdx][key] = task[key]
       }
     },
   },
@@ -538,6 +550,9 @@ export const boardStore = {
         throw err
       }
     },
+    updateTaskInPlace({ commit }, { groupId, task }) {
+      commit('updateTaskInPlace', { groupId, task })
+    },
   },
 
   getters: {
@@ -549,7 +564,7 @@ export const boardStore = {
 
         const board = state.boards.find((board) => board._id === boardId)
         if (!board) {
-          console.error('No board found with ID:', boardId)
+          // console.error('No board found with ID:', boardId)
           return []
         }
 

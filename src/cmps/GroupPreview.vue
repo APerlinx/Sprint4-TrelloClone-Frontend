@@ -108,6 +108,7 @@ export default {
   created() {
     this.currBoard = this.$store.getters.getCurrBoard
   },
+
   computed: {},
   methods: {
     handleAction(actionType) {

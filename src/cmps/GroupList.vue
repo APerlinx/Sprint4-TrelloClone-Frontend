@@ -55,7 +55,11 @@
           <span class="icon"></span> Add another list
         </button>
       </li>
-      <li class="open-form-wrapper" v-if="toggleAddForm" v-click-outside="handleCloseComponent">
+      <li
+        class="open-form-wrapper"
+        v-if="toggleAddForm"
+        v-click-outside="handleCloseComponent"
+      >
         <AddGroup @addGroup="addGroup" @close="handleCloseComponent" />
       </li>
       <button @click="saveMsg" style="padding: 0px">.</button>
@@ -164,9 +168,6 @@ export default {
       isZoomedOut: false,
     }
   },
-  updated() {
-    // console.log('this.isZoomedOut', this.isZoomedOut);
-  },
   computed: {
     loggedInUser() {
       return this.$store.getters.loggedinUser
@@ -193,7 +194,6 @@ export default {
     // socketService.on(SOCKET_EVENT_ADDTASK_MSG, this.addTask);
   },
   methods: {
-
     getGroupPayload(index) {
       return this.groups[index]
     },
