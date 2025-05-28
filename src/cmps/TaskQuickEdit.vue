@@ -279,19 +279,21 @@ export default {
       this.editTask()
     },
     saveLabel(labelId) {
-      const idx = this.taskToEdit.labels?.findIndex(
-        (label) => label === labelId
-      )
-      if (idx >= 0) this.taskToEdit.labels?.splice(idx, 1)
-      else {
-        this.taskToEdit.labels.push(labelId)
-      }
+      const labels = [...(this.taskToEdit.labels || [])]
+
+      const idx = labels.findIndex((label) => label === labelId)
+      if (idx >= 0) labels.splice(idx, 1)
+      else labels.push(labelId)
+
+      this.taskToEdit.labels = labels
+
       if (this.localTask?.title && this.taskToEdit) {
         this.taskToEdit.title = this.localTask.title
       }
 
       this.editTask()
     },
+
     setTask() {
       this.taskToEdit = JSON.parse(JSON.stringify(this.task))
     },
