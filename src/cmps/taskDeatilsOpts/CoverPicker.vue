@@ -136,7 +136,10 @@ export default {
       lastPick: '',
       colorOptions: [
         //green
-        '#f87462',
+        '#4dce97',
+
+        //purple
+        '#d574e9',
 
         //gold
         '#e1b304',
@@ -145,10 +148,7 @@ export default {
         '#faa63d',
 
         //light-orange
-        '#faa73d',
-
-        //purple
-        '#9f90ef',
+        '#e4c296',
 
         //blue
         '#589dff',
@@ -167,10 +167,10 @@ export default {
       ],
       colorClass: [
         'green',
+        'purple',
         'gold',
         'orange',
         'light-orange',
-        'purple',
         'blue',
         'tourq',
         'pink',
