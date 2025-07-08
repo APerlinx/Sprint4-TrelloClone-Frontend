@@ -132,6 +132,9 @@ Just a taste of the mobile experience. We used different mixins, conditional ren
 ## Acknowledgments
 We would like to express our gratitude to the Trello team for inspiring this project and to the developers of the third-party libraries that contributed to its feature set. Thank you for considering Trio for your project management needs!
 
+## Credits
+This app was developed during a sprint in the Coding Academy bootcamp. Inspired by Trello’s UX.
+
 ## License
 
 This project is open source and available under the [MIT License](LICENSE).
