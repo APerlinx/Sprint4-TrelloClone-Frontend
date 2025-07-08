@@ -26,6 +26,15 @@ Trio is a pixel-perfect, end-to-end clone of Trello, a popular project and task 
 - **Side Menu**: Easily change the board's background using the Unsplash Photo API, filter tasks by members or labels, and access the general activity log.
 - **Accessibility Features**: We've implemented a Blind Color Mode to aid users with color blindness and a voice assistant that accepts vocal commands for effortless task management.
 
+## My Role
+
+This was a collaborative project with 3 developers.  
+**My personal contributions included:**
+- Implementing the board and group layout logic
+- Building the drag & drop feature
+- Creating the task preview modal system
+- Integrating Vuex state updates across board views
+
 ## Technologies
 
 Trio is built using the MERN stack:
